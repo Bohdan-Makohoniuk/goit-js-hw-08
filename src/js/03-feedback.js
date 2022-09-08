@@ -27,6 +27,8 @@ function initPage (arguments) {
     
 }
 
+console.log();
+
 
 
 feedback.addEventListener('input', handleInput);
