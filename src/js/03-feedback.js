@@ -1,34 +1,43 @@
-const feedback = document.querySelector('.feedback-form');
-const formData = {};
-initPage();
+import storageAPI from './storage';
+var throttle = require('lodash.throttle');
 
-function handleInput(event) {
-    const { name, value } = event.target;
-    formData[name] = value;
+let form = document.querySelector('.feedback-form');
 
-    const formDataJSON = JSON.stringify(formData);
+initPage()
+form.addEventListener('input', throttle(handleInput, 500));
+form.addEventListener('submit', handleSubmit);
 
-    localStorage.setItem('formKey', formDataJSON)
-    console.log(formDataJSON);
-     console.log(formDataJSON);
-  
+function handleInput (e) {
+    const {name, value} = e.target;
+    
+    let savedData = storageAPI.load('feedback-form-state');
+    savedData = savedData ? savedData : {};
+    savedData[name] = value;
+    storageAPI.save('feedback-form-state', savedData);
+
+    console.log(handleInput);
 }
+
 function initPage () {
-    const savedData = localStorage.getItem('formKey');
+   const savedData = storageAPI.load('feedback-form-state');
     if (!savedData) {
         return;
     }
-    const savedDataObj = JSON.parse(savedData);
-    // Масив масивів повертає Object.entries
-    Object.entries(savedDataObj).forEach(([name, value]) => {
-        feedback.elements[name].value = value;
-       
-    });
-    
+    Object.entries(savedData).forEach(([name, value]) => {
+        form.elements[name].value = value;
+    })
 }
 
-console.log();
+function handleSubmit (e) {
+    e.preventDefault();
+    const {
+        elements: {email, message}
+    } = e.currentTarget;
+
+    console.log({email: email.value, message: message.value});
+
+    e.currentTarget.reset();
+    storageAPI.remove('feedback-form-state');
+}
 
 
-
-feedback.addEventListener('input', handleInput);
