@@ -13,7 +13,7 @@ function handleInput(event) {
      console.log(formDataJSON);
   
 }
-function initPage (arguments) {
+function initPage () {
     const savedData = localStorage.getItem('formKey');
     if (!savedData) {
         return;
@@ -21,7 +21,7 @@ function initPage (arguments) {
     const savedDataObj = JSON.parse(savedData);
     // Масив масивів повертає Object.entries
     Object.entries(savedDataObj).forEach(([name, value]) => {
-        form.elements[name].value = value;
+        feedback.elements[name].value = value;
        
     });
     
